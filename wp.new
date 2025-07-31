@@ -142,14 +142,27 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Create test database
+# Check if test database exists
 TEST_DB_NAME="${DB_NAME}_test"
-echo "➕ Creating test database '$TEST_DB_NAME'..."
-mysql -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS $TEST_DB_NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" 2>/dev/null
-if [ $? -eq 0 ]; then
-    echo "✅ Test database '$TEST_DB_NAME' created successfully"
+if [ -z "$DB_PASSWORD" ]; then
+    mysql -h"$DB_HOST" -u"$DB_USER" -e "USE $TEST_DB_NAME;" 2>/dev/null
 else
-    echo "⚠️ Warning: Failed to create test database '$TEST_DB_NAME'"
+    mysql -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASSWORD" -e "USE $TEST_DB_NAME;" 2>/dev/null
+fi
+if [ $? -eq 0 ]; then
+    echo "✅ Test database '$TEST_DB_NAME' already exists, skipping creation"
+else
+    echo "➕ Creating test database '$TEST_DB_NAME'..."
+    if [ -z "$DB_PASSWORD" ]; then
+        mysql -h"$DB_HOST" -u"$DB_USER" -e "CREATE DATABASE IF NOT EXISTS $TEST_DB_NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" 2>/dev/null
+    else
+        mysql -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS $TEST_DB_NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" 2>/dev/null
+    fi
+    if [ $? -eq 0 ]; then
+        echo "✅ Test database '$TEST_DB_NAME' created successfully"
+    else
+        echo "⚠️ Warning: Failed to create test database '$TEST_DB_NAME'"
+    fi
 fi
 
 # --- 7. Install WordPress using WP-CLI ---
