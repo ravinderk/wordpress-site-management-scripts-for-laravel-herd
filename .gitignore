@@ -1,0 +1,10 @@
+# Ignore everything
+*
+
+# But don't ignore these files
+!wp.new
+!wp.delete
+!README.md
+!LICENSE
+!CONTRIBUTING.md
+!.gitignore
