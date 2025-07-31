@@ -1,0 +1,215 @@
+#!/bin/bash
+
+# --- WordPress Site Setup Script for Herd (using WP-CLI) ---
+# This script automates the process of downloading WordPress,
+# configuring wp-config.php, creating the database, and installing WordPress
+# using WP-CLI. It now includes default "dummy" admin credentials for quick setup.
+# This version also includes emojis for a more engaging output!
+#
+# Date: July 31, 2025
+
+echo "✨ --- WordPress Site Setup for Herd (using WP-CLI) --- ✨"
+echo "This script will help you set up a new WordPress site using WP-CLI."
+echo "----------------------------------------------------"
+
+# --- Function to check if a command exists ---
+command_exists () {
+  type "$1" &> /dev/null ;
+}
+
+# --- 1. Check for WP-CLI and Herd ---
+echo "🔍 Checking for WP-CLI..."
+if ! command_exists wp ; then
+  echo "❌ Error: WP-CLI is not found. Please install WP-CLI (https://wp-cli.org/) and ensure it's in your system's PATH."
+  echo "   You can typically install it by running: curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && chmod +x wp-cli.phar && sudo mv wp-cli.phar /usr/local/bin/wp"
+  exit 1
+fi
+echo "✅ WP-CLI found."
+
+echo "🔍 Checking for Herd..."
+if ! command_exists herd ; then
+  echo "❌ Error: Herd is not found. Please install Herd (https://herd.laravel.com/) and ensure it's in your system's PATH."
+  exit 1
+fi
+echo "✅ Herd found."
+
+# --- 2. Get User Input ---
+
+# Prompt for the site name (this will also be the directory name and part of the URL)
+read -p "🌐 Enter your desired WordPress site name (e.g., my-blog): " SITE_NAME
+if [ -z "$SITE_NAME" ]; then
+    echo "❌ Site name cannot be empty. Exiting."
+    exit 1
+fi
+
+# Always create site in root Herd directory
+SITE_PATH="$HOME/Herd/$SITE_NAME"
+
+echo "🚀 Site will be created at: $SITE_PATH"
+
+# Prompt for Database details
+read -p "🗄️ Enter MySQL Database Name (e.g., ${SITE_NAME}_db): " DB_NAME
+if [ -z "$DB_NAME" ]; then
+    DB_NAME="${SITE_NAME}_db"
+    echo "✅ Using default database name: $DB_NAME"
+fi
+
+read -p "👤 Enter MySQL Database User (e.g., root) [Default: root]: " DB_USER
+if [ -z "$DB_USER" ]; then
+    DB_USER="root"
+    echo "✅ Using default database user: $DB_USER"
+fi
+
+read -s -p "🔑 Enter MySQL Database Password (leave blank if none): " DB_PASSWORD
+echo # Move to a new line after password input
+
+read -p "🖥️ Enter MySQL Database Host (e.g., 127.0.0.1 or localhost) [Default: 127.0.0.1]: " DB_HOST
+if [ -z "$DB_HOST" ]; then
+    DB_HOST="127.0.0.1" # Default for Herd's MySQL
+    echo "✅ Using default database host: $DB_HOST"
+fi
+
+echo "" # Spacer
+
+# --- WordPress Installation Details with Dummy Defaults ---
+echo "--- 📝 WordPress Installation Details (Defaults provided for quick setup) ---"
+
+# Default dummy admin credentials
+DEFAULT_WP_ADMIN_USER="admin"
+DEFAULT_WP_ADMIN_PASSWORD="password" # This is a dummy password, change it immediately on a live site!
+DEFAULT_WP_ADMIN_EMAIL="admin@example.com"
+
+read -p "✨ Enter WordPress Site Title (e.g., My Awesome Blog) [Default: $SITE_NAME]: " WP_SITE_TITLE
+if [ -z "$WP_SITE_TITLE" ]; then
+    WP_SITE_TITLE="$SITE_NAME" # Default to site name if empty
+fi
+
+read -p "🧑‍💻 Enter WordPress Admin Username [Default: $DEFAULT_WP_ADMIN_USER]: " WP_ADMIN_USER
+if [ -z "$WP_ADMIN_USER" ]; then
+    WP_ADMIN_USER="$DEFAULT_WP_ADMIN_USER"
+fi
+
+read -s -p "🔒 Enter WordPress Admin Password [Default: $DEFAULT_WP_ADMIN_PASSWORD]: " WP_ADMIN_PASSWORD
+echo # Move to a new line after password input
+if [ -z "$WP_ADMIN_PASSWORD" ]; then
+    WP_ADMIN_PASSWORD="$DEFAULT_WP_ADMIN_PASSWORD"
+fi
+
+read -p "📧 Enter WordPress Admin Email [Default: $DEFAULT_WP_ADMIN_EMAIL]: " WP_ADMIN_EMAIL
+if [ -z "$WP_ADMIN_EMAIL" ]; then
+    WP_ADMIN_EMAIL="$DEFAULT_WP_ADMIN_EMAIL"
+fi
+
+echo "" # Spacer
+
+# --- 3. Create Site Directory ---
+echo "📂 Creating site directory: $SITE_PATH"
+mkdir -p "$SITE_PATH"
+if [ $? -ne 0 ]; then
+    echo "❌ Error: Could not create directory $SITE_PATH. Check permissions."
+    exit 1
+fi
+
+# --- 4. Download WordPress using WP-CLI ---
+echo "⬇️ Downloading WordPress core to $SITE_PATH using WP-CLI..."
+# Use php directly with memory limit to run wp-cli
+php -d memory_limit=-1 -d max_execution_time=0 $(which wp) core download --path="$SITE_PATH"
+if [ $? -ne 0 ]; then
+    echo "❌ Error: Failed to download WordPress core using WP-CLI. Check your internet connection or permissions for $SITE_PATH."
+    exit 1
+fi
+
+# --- 5. Configure wp-config.php using WP-CLI ---
+echo "⚙️ Configuring wp-config.php using WP-CLI..."
+php -d memory_limit=-1 -d max_execution_time=0 $(which wp) config create \
+    --path="$SITE_PATH" \
+    --dbname="$DB_NAME" \
+    --dbuser="$DB_USER" \
+    --dbpass="$DB_PASSWORD" \
+    --dbhost="$DB_HOST" \
+    --dbcharset="utf8mb4" \
+    --dbcollate="utf8mb4_unicode_ci"
+if [ $? -ne 0 ]; then
+    echo "❌ Error: Failed to create wp-config.php using WP-CLI. Check your database credentials or permissions."
+    exit 1
+fi
+
+# --- 6. Create MySQL Database using WP-CLI ---
+echo "➕ Creating MySQL database '$DB_NAME' using WP-CLI..."
+php -d memory_limit=-1 -d max_execution_time=0 $(which wp) db create --path="$SITE_PATH"
+if [ $? -ne 0 ]; then
+    echo "❌ Error: Failed to create database '$DB_NAME' using WP-CLI. Ensure your MySQL server is running (Herd's database server) and credentials are correct."
+    exit 1
+fi
+
+# Create test database
+TEST_DB_NAME="${DB_NAME}_test"
+echo "➕ Creating test database '$TEST_DB_NAME'..."
+mysql -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS $TEST_DB_NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" 2>/dev/null
+if [ $? -eq 0 ]; then
+    echo "✅ Test database '$TEST_DB_NAME' created successfully"
+else
+    echo "⚠️ Warning: Failed to create test database '$TEST_DB_NAME'"
+fi
+
+# --- 7. Install WordPress using WP-CLI ---
+echo "✅ Installing WordPress core using WP-CLI..."
+php -d memory_limit=-1 -d max_execution_time=0 $(which wp) core install \
+    --path="$SITE_PATH" \
+    --url="http://${SITE_NAME}.test" \
+    --title="$WP_SITE_TITLE" \
+    --admin_user="$WP_ADMIN_USER" \
+    --admin_password="$WP_ADMIN_PASSWORD" \
+    --admin_email="$WP_ADMIN_EMAIL" \
+    --skip-email # Skips sending an email to the admin email address
+if [ $? -ne 0 ]; then
+    echo "❌ Error: Failed to install WordPress core using WP-CLI."
+    echo "   Possible issues: Site URL conflict, database connection problem, or WordPress already installed."
+    exit 1
+fi
+
+# --- 8. Install recommended plugins ---
+echo "🔌 Installing recommended WordPress plugins..."
+echo "   - Installing WP Mail Logging..."
+php -d memory_limit=-1 -d max_execution_time=0 $(which wp) plugin install wp-mail-logging --activate --path="$SITE_PATH"
+if [ $? -eq 0 ]; then
+    echo "✅ WP Mail Logging installed and activated"
+else
+    echo "⚠️ Warning: Failed to install WP Mail Logging"
+fi
+
+echo "   - Installing Query Monitor..."
+php -d memory_limit=-1 -d max_execution_time=0 $(which wp) plugin install query-monitor --activate --path="$SITE_PATH"
+if [ $? -eq 0 ]; then
+    echo "✅ Query Monitor installed and activated"
+else
+    echo "⚠️ Warning: Failed to install Query Monitor"
+fi
+
+echo "   - Installing WP Crontrol..."
+php -d memory_limit=-1 -d max_execution_time=0 $(which wp) plugin install wp-crontrol --activate --path="$SITE_PATH"
+if [ $? -eq 0 ]; then
+    echo "✅ WP Crontrol installed and activated"
+else
+    echo "⚠️ Warning: Failed to install WP Crontrol"
+fi
+
+# --- 9. Secure the site with HTTPS using Herd ---
+echo "🔒 Securing site with HTTPS using Herd..."
+herd secure "$SITE_NAME"
+if [ $? -eq 0 ]; then
+    echo "✅ HTTPS enabled for $SITE_NAME.test"
+    SITE_URL="https://${SITE_NAME}.test"
+else
+    echo "⚠️ Warning: Failed to enable HTTPS. Site will use HTTP."
+    SITE_URL="http://${SITE_NAME}.test"
+fi
+
+echo ""
+echo "🎉 --- Setup Complete! --- 🎉"
+echo "Your WordPress site has been set up at: $SITE_PATH"
+echo ""
+echo "3. Open your browser and go to 🔗 $SITE_URL"
+echo "   Your admin login details are: Username: $WP_ADMIN_USER, Password: $WP_ADMIN_PASSWORD"
+
+echo "🥳 Happy Development!"

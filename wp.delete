@@ -1,0 +1,138 @@
+#!/bin/bash
+
+# --- WordPress Site Deletion Script for Herd ---
+# This script safely removes WordPress sites created with wp.new
+# It removes the site directory, database, and Herd configuration
+#
+# Date: July 31, 2025
+
+echo "🗑️ --- WordPress Site Deletion for Herd --- 🗑️"
+echo "This script will help you safely remove a WordPress site."
+echo "⚠️ WARNING: This action is irreversible!"
+echo "----------------------------------------------------"
+
+# --- Function to check if a command exists ---
+command_exists () {
+  type "$1" &> /dev/null ;
+}
+
+# --- 1. Check for WP-CLI and Herd ---
+echo "🔍 Checking for WP-CLI..."
+if ! command_exists wp ; then
+  echo "❌ Error: WP-CLI is not found. Please install WP-CLI (https://wp-cli.org/) and ensure it's in your system's PATH."
+  exit 1
+fi
+echo "✅ WP-CLI found."
+
+echo "🔍 Checking for Herd..."
+if ! command_exists herd ; then
+  echo "❌ Error: Herd is not found. Please install Herd (https://herd.laravel.com/) and ensure it's in your system's PATH."
+  exit 1
+fi
+echo "✅ Herd found."
+
+# --- 2. Get site name to delete ---
+read -p "🌐 Enter the WordPress site name to delete: " SITE_NAME
+if [ -z "$SITE_NAME" ]; then
+    echo "❌ Site name cannot be empty. Exiting."
+    exit 1
+fi
+
+# Set site path
+SITE_PATH="$HOME/Herd/$SITE_NAME"
+
+# --- 3. Verify site exists ---
+if [ ! -d "$SITE_PATH" ]; then
+    echo "❌ Error: Site directory $SITE_PATH does not exist."
+    exit 1
+fi
+
+# Check if it's a WordPress site
+if [ ! -f "$SITE_PATH/wp-config.php" ]; then
+    echo "❌ Error: $SITE_PATH does not appear to be a WordPress site (no wp-config.php found)."
+    exit 1
+fi
+
+echo "📂 Found WordPress site at: $SITE_PATH"
+
+# --- 4. Get database information from wp-config.php ---
+echo "🔍 Reading database configuration..."
+DB_NAME=$(php -d memory_limit=-1 $(which wp) config get DB_NAME --path="$SITE_PATH" 2>/dev/null)
+DB_USER=$(php -d memory_limit=-1 $(which wp) config get DB_USER --path="$SITE_PATH" 2>/dev/null)
+DB_HOST=$(php -d memory_limit=-1 $(which wp) config get DB_HOST --path="$SITE_PATH" 2>/dev/null)
+
+if [ -n "$DB_NAME" ]; then
+    echo "✅ Found database: $DB_NAME"
+else
+    echo "⚠️ Warning: Could not read database configuration"
+fi
+
+# --- 5. Final confirmation ---
+echo ""
+echo "⚠️ DANGER ZONE ⚠️"
+echo "This will permanently delete:"
+echo "  - Site directory: $SITE_PATH"
+if [ -n "$DB_NAME" ]; then
+    echo "  - Database: $DB_NAME"
+fi
+echo "  - Herd HTTPS certificate for $SITE_NAME.test"
+echo ""
+read -p "Are you absolutely sure you want to delete this site? Type 'DELETE' to confirm: " CONFIRM
+
+if [ "$CONFIRM" != "DELETE" ]; then
+    echo "❌ Deletion cancelled. Site remains intact."
+    exit 0
+fi
+
+# --- 6. Remove Herd HTTPS certificate ---
+echo "🔓 Removing HTTPS certificate..."
+herd unsecure "$SITE_NAME" 2>/dev/null
+if [ $? -eq 0 ]; then
+    echo "✅ HTTPS certificate removed"
+else
+    echo "⚠️ Warning: Could not remove HTTPS certificate (may not exist)"
+fi
+
+# --- 7. Drop database ---
+if [ -n "$DB_NAME" ]; then
+    echo "🗄️ Dropping database '$DB_NAME'..."
+    php -d memory_limit=-1 $(which wp) db drop --yes --path="$SITE_PATH" 2>/dev/null
+    if [ $? -eq 0 ]; then
+        echo "✅ Database '$DB_NAME' dropped successfully"
+    else
+        echo "⚠️ Warning: Could not drop database '$DB_NAME'"
+    fi
+    
+    # Also drop test database if it exists
+    TEST_DB_NAME="${DB_NAME}_test"
+    echo "🗄️ Checking for test database '$TEST_DB_NAME'..."
+    # Check if test database exists by trying to connect
+    php -d memory_limit=-1 $(which wp) db query "USE $TEST_DB_NAME;" --path="$SITE_PATH" 2>/dev/null
+    if [ $? -eq 0 ]; then
+        echo "🗄️ Dropping test database '$TEST_DB_NAME'..."
+        mysql -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASSWORD" -e "DROP DATABASE IF EXISTS $TEST_DB_NAME;" 2>/dev/null
+        if [ $? -eq 0 ]; then
+            echo "✅ Test database '$TEST_DB_NAME' dropped successfully"
+        else
+            echo "⚠️ Warning: Could not drop test database '$TEST_DB_NAME'"
+        fi
+    else
+        echo "ℹ️ Test database '$TEST_DB_NAME' does not exist"
+    fi
+fi
+
+# --- 8. Remove site directory ---
+echo "📂 Removing site directory..."
+rm -rf "$SITE_PATH"
+if [ $? -eq 0 ]; then
+    echo "✅ Site directory removed successfully"
+else
+    echo "❌ Error: Failed to remove site directory"
+    exit 1
+fi
+
+echo ""
+echo "🎉 --- Deletion Complete! --- 🎉"
+echo "WordPress site '$SITE_NAME' has been completely removed."
+echo ""
+echo "🧹 All clean!"
