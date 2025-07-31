@@ -1,6 +1,6 @@
-# WordPress Site Management Scripts for Herd for local development
+# WordPress Site Management Scripts for Herd
 
-This repository contains bash scripts to easily create and delete WordPress sites using [Laravel Herd](https://herd.laravel.com/) and [WP-CLI](https://wp-cli.org/).
+A collection of bash scripts to easily create and delete WordPress sites using [Laravel Herd](https://herd.laravel.com/) and [WP-CLI](https://wp-cli.org/) for local development.
 
 ## 📋 Prerequisites
 
