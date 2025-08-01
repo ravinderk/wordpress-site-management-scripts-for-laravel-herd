@@ -2,6 +2,21 @@
 
 A collection of bash scripts to easily create and delete WordPress sites using [Laravel Herd](https://herd.laravel.com/) and [WP-CLI](https://wp-cli.org/) for local development.
 
+## 📚 Table of Contents
+
+- [Prerequisites](#-prerequisites)
+- [Scripts](#-scripts)
+  - [wp.new - WordPress Site Creation](#wpnew---wordpress-site-creation)
+  - [wp.delete - WordPress Site Deletion](#wpdelete---wordpress-site-deletion)
+- [File Structure](#-file-structure)
+- [Configuration](#-configuration)
+- [Troubleshooting](#️-troubleshooting)
+- [Re-running Scripts](#-re-running-scripts)
+- [Included WordPress Development Plugins](#-included-wordpress-development-plugins)
+- [Debugging Setup](#-debugging-setup)
+- [Contributing](#-contributing)
+- [License](#-license)
+
 ## 📋 Prerequisites
 
 Before using these scripts, ensure you have the following installed:
@@ -158,6 +173,17 @@ The `wp.new` script automatically installs and activates these essential develop
 - **Features**: View, edit, delete, and run cron events manually
 
 These plugins are automatically installed and activated during site creation to provide a complete development environment out of the box.
+
+## 🐛 Debugging Setup
+
+### Xdebug Configuration
+
+For debugging WordPress with Xdebug, follow these setup guides:
+
+1. **[Official Herd Xdebug Documentation](https://herd.laravel.com/docs/macos/debugging/xdebug)** - Complete setup guide for enabling Xdebug in Herd
+2. **[VS Code + Herd Xdebug Setup](https://thomashysselinckx.medium.com/activating-xdebug-on-visual-studio-code-laravel-herd-cfd0553d26e0)** - Detailed guide for configuring Xdebug with Visual Studio Code
+
+These resources will help you set up step-by-step debugging for your WordPress development workflow.
 
 ## 🤝 Contributing
 
