@@ -4,7 +4,9 @@
 # But don't ignore these files
 !wp.new
 !wp.delete
+!herd.xdebug.on
+!herd.xdebug.off
 !README.md
 !LICENSE
 !CONTRIBUTING.md
-!.gitignore
+!xdebug.on
