@@ -2,6 +2,8 @@
 /**
  * Custom PHP Error Template for WordPress
  * This file is executed when a fatal PHP error occurs
+ * 
+ * @see https://github.com/WordPress/wordpress-develop/blob/7cf0bb5594ab336a2c919958378035e4bbf46db4/src/wp-includes/class-wp-fatal-error-handler.php#L147
  */
 
 // Set appropriate HTTP status code
