@@ -4,8 +4,7 @@
 # But don't ignore these files
 !wp.new
 !wp.delete
-!herd.xdebug.on
-!herd.xdebug.off
+!herd.xdebug
 !php-error.manage
 !.php-error-template
 !README.md

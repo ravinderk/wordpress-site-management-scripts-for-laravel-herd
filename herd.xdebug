@@ -1,0 +1,141 @@
+#!/bin/bash
+
+# --- Xdebug Management Script for Laravel Herd ---
+# This script enables or disables Xdebug for debugging WordPress sites in Herd
+#
+# Date: January 2025
+
+# Function to show usage
+show_usage() {
+    echo "🐛 --- Xdebug Management for Laravel Herd --- 🐛"
+    echo "This script enables or disables Xdebug for debugging."
+    echo "----------------------------------------------------"
+    echo ""
+    echo "Usage: $0 [on|off]"
+    echo ""
+    echo "Commands:"
+    echo "  on      - Enable Xdebug for debugging"
+    echo "  off     - Disable Xdebug for better performance"
+    echo ""
+    echo "Examples:"
+    echo "  $0 on     # Enable Xdebug"
+    echo "  $0 off    # Disable Xdebug"
+}
+
+# --- Function to check if a command exists ---
+command_exists () {
+  type "$1" &> /dev/null ;
+}
+
+# Function to configure Xdebug mode
+configure_xdebug() {
+    local mode="$1"
+    local action_desc="$2"
+    local emoji="$3"
+    
+    echo "$emoji --- $action_desc Xdebug for Laravel Herd --- $emoji"
+    echo "This script will $action_desc Xdebug."
+    echo "----------------------------------------------------"
+    
+    # --- Check for Herd ---
+    echo "🔍 Checking for Herd..."
+    if ! command_exists herd ; then
+      echo "❌ Error: Herd is not found. Please install Herd (https://herd.laravel.com/) and ensure it's in your system's PATH."
+      exit 1
+    fi
+    echo "✅ Herd found."
+    
+    # --- Configure Xdebug ---
+    echo "🔧 ${action_desc}ing Xdebug..."
+    
+    # Define Herd PHP config directory
+    HERD_PHP_CONFIG_DIR="$HOME/Library/Application Support/Herd/config/php"
+    
+    if [ ! -d "$HERD_PHP_CONFIG_DIR" ]; then
+        echo "❌ Error: Herd PHP config directory not found at $HERD_PHP_CONFIG_DIR"
+        exit 1
+    fi
+    
+    echo "📁 Found Herd PHP config directory: $HERD_PHP_CONFIG_DIR"
+    
+    # Configure xdebug.mode in all PHP versions
+    echo "⚙️ Configuring Xdebug mode to $mode in all PHP versions..."
+    
+    for php_version_dir in "$HERD_PHP_CONFIG_DIR"/*; do
+        if [ -d "$php_version_dir" ]; then
+            PHP_VERSION=$(basename "$php_version_dir")
+            PHP_INI_FILE="$php_version_dir/php.ini"
+            
+            if [ -f "$PHP_INI_FILE" ]; then
+                echo "🔧 Checking PHP $PHP_VERSION: $PHP_INI_FILE"
+                
+                # Check if Xdebug is configured in this PHP version
+                if grep -q "xdebug" "$PHP_INI_FILE"; then
+                    # Check if xdebug.mode exists and update/add it
+                    if grep -q "^xdebug.mode" "$PHP_INI_FILE"; then
+                        # Update existing xdebug.mode
+                        sed -i '' "s/^xdebug.mode.*/xdebug.mode=$mode/" "$PHP_INI_FILE"
+                        echo "✅ Updated xdebug.mode=$mode in PHP $PHP_VERSION"
+                    else
+                        # Add xdebug.mode if it doesn't exist
+                        echo "xdebug.mode=$mode" >> "$PHP_INI_FILE"
+                        echo "✅ Added xdebug.mode=$mode to PHP $PHP_VERSION"
+                    fi
+                else
+                    echo "⏭️ Skipping PHP $PHP_VERSION - Xdebug not configured in php.ini"
+                fi
+            else
+                echo "⚠️ Warning: php.ini not found for PHP $PHP_VERSION"
+            fi
+        fi
+    done
+    
+    echo "✅ Xdebug ${action_desc}d successfully!"
+    
+    # Restart Herd to apply changes
+    echo "🔄 Restarting Herd to apply configuration changes..."
+    herd restart
+    if [ $? -eq 0 ]; then
+        echo "✅ Herd restarted successfully!"
+    else
+        echo "⚠️ Warning: Failed to restart Herd. You may need to restart manually."
+    fi
+    
+    if [ "$mode" = "debug" ]; then
+        echo ""
+        echo "📝 Next Steps:"
+        echo "1. Configure your IDE (VS Code, PhpStorm, etc.) for Xdebug"
+        echo "2. Set breakpoints in your WordPress code"
+        echo "3. Start debugging your application"
+        echo ""
+        echo "📚 Useful Resources:"
+        echo "   - Herd Xdebug Docs: https://herd.laravel.com/docs/macos/debugging/xdebug"
+        echo "   - VS Code Setup Guide: https://thomashysselinckx.medium.com/activating-xdebug-on-visual-studio-code-laravel-herd-cfd0553d26e0"
+        echo ""
+        echo "🎯 Happy Debugging!"
+    else
+        echo "🚀 Performance improved - Xdebug overhead removed!"
+    fi
+}
+
+# Check arguments
+if [ $# -ne 1 ]; then
+    show_usage
+    exit 1
+fi
+
+ACTION="$1"
+
+case "$ACTION" in
+    "on")
+        configure_xdebug "debug" "Enabl" "🐛"
+        ;;
+    "off")
+        configure_xdebug "off" "Disabl" "🐛❌"
+        ;;
+    *)
+        echo "❌ Error: Invalid action '$ACTION'. Use 'on' or 'off'."
+        show_usage
+        exit 1
+        ;;
+esac
