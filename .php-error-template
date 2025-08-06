@@ -1,0 +1,353 @@
+<?php
+/**
+ * Custom PHP Error Template for WordPress
+ * This file is executed when a fatal PHP error occurs
+ */
+
+// Set appropriate HTTP status code
+if (!headers_sent()) {
+    http_response_code(500);
+    header('Content-Type: text/html; charset=utf-8');
+}
+
+// Get error information
+$error = error_get_last();
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHP Error Occurred</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .error-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .error-header {
+            background: #dc3545;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .error-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .error-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .error-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .error-content {
+            padding: 30px;
+        }
+        
+        .error-details {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .error-field {
+            margin-bottom: 15px;
+        }
+        
+        .error-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        
+        .error-value {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 12px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #212529;
+            word-break: break-all;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            font-weight: 500;
+            white-space: pre-wrap;
+        }
+        
+        .stack-trace {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .stack-trace-title {
+            font-weight: 600;
+            color: #495057;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .stack-item {
+            margin-bottom: 8px;
+            padding: 8px;
+            background: #fff;
+            border-left: 3px solid #007bff;
+            border-radius: 3px;
+        }
+        
+        .stack-number {
+            color: #007bff;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        .stack-file {
+            color: #28a745;
+            font-size: 12px;
+        }
+        
+        .stack-function {
+            color: #6f42c1;
+            font-weight: 500;
+        }
+        
+        .main-error {
+            background: #fff5f5;
+            border-left: 3px solid #dc3545;
+            padding: 10px;
+            border-radius: 3px;
+            margin-bottom: 10px;
+        }
+        
+        .main-error-text {
+            color: #dc3545;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .error-file {
+            color: #007bff;
+        }
+        
+        .error-line {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .error-type {
+            color: #fd7e14;
+            font-weight: 600;
+        }
+        
+        .error-actions {
+            border-top: 1px solid #dee2e6;
+            padding: 20px 30px;
+            background: #f8f9fa;
+            text-align: center;
+        }
+        
+        .error-actions p {
+            color: #6c757d;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .timestamp {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 600px) {
+            .error-container {
+                margin: 10px;
+            }
+            
+            .error-header, .error-content {
+                padding: 20px;
+            }
+            
+            .error-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-header">
+            <div class="error-icon">💥</div>
+            <h1 class="error-title">PHP Fatal Error</h1>
+            <p class="error-subtitle">A critical error has occurred and the page cannot be displayed</p>
+        </div>
+        
+        <div class="error-content">
+            <?php if ($error && is_array($error)): ?>
+                <div class="error-details">
+                    <?php if (isset($error['message'])): ?>
+                        <div class="error-field">
+                            <div class="error-label">Error Message</div>
+                            <div class="error-value error-message">
+                                <?php 
+                                $message = htmlspecialchars($error['message']);
+                                
+                                // Check if message contains stack trace
+                                if (strpos($message, 'Stack trace:') !== false) {
+                                    $parts = explode('Stack trace:', $message, 2);
+                                    $mainError = trim($parts[0]);
+                                    $stackTrace = isset($parts[1]) ? trim($parts[1]) : '';
+                                    
+                                    echo '<div class="main-error">';
+                                    echo '<div class="main-error-text">' . $mainError . '</div>';
+                                    echo '</div>';
+                                    
+                                    if (!empty($stackTrace)) {
+                                        echo '<div class="stack-trace">';
+                                        echo '<div class="stack-trace-title">Stack Trace</div>';
+                                        
+                                        $lines = explode("\n", $stackTrace);
+                                        foreach ($lines as $line) {
+                                            $line = trim($line);
+                                            if (empty($line)) continue;
+                                            
+                                            // Parse stack trace line
+                                            if (preg_match('/^#(\d+)\s+(.+?)(\([^)]*\))?\s*$/', $line, $matches)) {
+                                                $number = $matches[1];
+                                                $location = $matches[2];
+                                                $function = isset($matches[3]) ? $matches[3] : '';
+                                                
+                                                echo '<div class="stack-item">';
+                                                echo '<span class="stack-number">#' . $number . '</span> ';
+                                                
+                                                // Extract file and line if present
+                                                if (preg_match('/^(.+):(\d+)$/', $location, $fileMatches)) {
+                                                    echo '<span class="stack-file">' . $fileMatches[1] . ':' . $fileMatches[2] . '</span>';
+                                                } else {
+                                                    echo '<span class="stack-file">' . $location . '</span>';
+                                                }
+                                                
+                                                if (!empty($function)) {
+                                                    echo '<br><span class="stack-function">' . $function . '</span>';
+                                                }
+                                                echo '</div>';
+                                            } else {
+                                                // Handle non-standard stack trace lines
+                                                echo '<div class="stack-item">' . $line . '</div>';
+                                            }
+                                        }
+                                        echo '</div>';
+                                    }
+                                } else {
+                                    // No stack trace, display message as-is
+                                    echo $message;
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if (isset($error['type'])): ?>
+                        <div class="error-field">
+                            <div class="error-label">Error Type</div>
+                            <div class="error-value error-type">
+                                <?php 
+                                $errorTypes = [
+                                    E_ERROR => 'Fatal Error',
+                                    E_WARNING => 'Warning',
+                                    E_PARSE => 'Parse Error',
+                                    E_NOTICE => 'Notice',
+                                    E_CORE_ERROR => 'Core Error',
+                                    E_CORE_WARNING => 'Core Warning',
+                                    E_COMPILE_ERROR => 'Compile Error',
+                                    E_COMPILE_WARNING => 'Compile Warning',
+                                    E_USER_ERROR => 'User Error',
+                                    E_USER_WARNING => 'User Warning',
+                                    E_USER_NOTICE => 'User Notice',
+                                    E_STRICT => 'Strict Standards',
+                                    E_RECOVERABLE_ERROR => 'Recoverable Error',
+                                    E_DEPRECATED => 'Deprecated',
+                                    E_USER_DEPRECATED => 'User Deprecated'
+                                ];
+                                echo htmlspecialchars($errorTypes[$error['type']] ?? 'Unknown Error');
+                                echo ' (' . $error['type'] . ')';
+                                ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if (isset($error['file'])): ?>
+                        <div class="error-field">
+                            <div class="error-label">File</div>
+                            <div class="error-value error-file"><?php echo htmlspecialchars($error['file']); ?></div>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if (isset($error['line'])): ?>
+                        <div class="error-field">
+                            <div class="error-label">Line</div>
+                            <div class="error-value error-line"><?php echo htmlspecialchars($error['line']); ?></div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php else: ?>
+                <div class="error-details">
+                    <div class="error-field">
+                        <div class="error-value">No detailed error information available.</div>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+        
+        <div class="error-actions">
+            <p>
+                <strong>What can you do?</strong><br>
+                • Check the error details above<br>
+                • Review recent code changes<br>
+                • Check server error logs for more information<br>
+                • Contact your developer or system administrator
+            </p>
+            <div class="timestamp">
+                Error occurred at: <?php echo date('Y-m-d H:i:s T'); ?>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -6,7 +6,8 @@
 !wp.delete
 !herd.xdebug.on
 !herd.xdebug.off
+!php-error.manage
+!.php-error-template
 !README.md
 !LICENSE
 !CONTRIBUTING.md
-!xdebug.on

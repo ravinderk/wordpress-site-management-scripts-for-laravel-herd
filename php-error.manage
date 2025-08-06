@@ -1,0 +1,125 @@
+#!/bin/bash
+
+# --- PHP Error Template Management Script ---
+# This script adds or removes php-error.php from WordPress sites
+#
+# Date: January 2025
+
+echo "🐛 --- PHP Error Template Management --- 🐛"
+echo "This script manages php-error.php across WordPress sites."
+echo "----------------------------------------------------"
+
+# Source php-error.php template path
+TEMPLATE_FILE=".php-error-template"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Function to show usage
+show_usage() {
+    echo "Usage: $0 [add|remove] [site-directory]"
+    echo ""
+    echo "Commands:"
+    echo "  add     - Add php-error.php to the specified site"
+    echo "  remove  - Remove php-error.php from the specified site"
+    echo ""
+    echo "Examples:"
+    echo "  $0 add mysite"
+    echo "  $0 remove mysite"
+    echo "  $0 add all        # Apply to all WordPress sites"
+    echo "  $0 remove all     # Remove from all WordPress sites"
+}
+
+# Function to check if directory is a WordPress site
+is_wordpress_site() {
+    local dir="$1"
+    if [ -f "$dir/wp-config.php" ] && [ -d "$dir/wp-content" ]; then
+        return 0
+    fi
+    return 1
+}
+
+# Function to add php-error.php to a site
+add_php_error() {
+    local site_dir="$1"
+    local target_file="$site_dir/wp-content/php-error.php"
+    
+    if [ ! -f "$TEMPLATE_FILE" ]; then
+        echo "❌ Error: Template file not found at $TEMPLATE_FILE"
+        return 1
+    fi
+    
+    if is_wordpress_site "$site_dir"; then
+        cp "$TEMPLATE_FILE" "$target_file"
+        if [ $? -eq 0 ]; then
+            echo "✅ Added php-error.php to $(basename "$site_dir")"
+        else
+            echo "❌ Failed to add php-error.php to $(basename "$site_dir")"
+        fi
+    else
+        echo "⏭️ Skipping $(basename "$site_dir") - not a WordPress site"
+    fi
+}
+
+# Function to remove php-error.php from a site
+remove_php_error() {
+    local site_dir="$1"
+    local target_file="$site_dir/wp-content/php-error.php"
+    
+    if [ -f "$target_file" ]; then
+        rm "$target_file"
+        if [ $? -eq 0 ]; then
+            echo "✅ Removed php-error.php from $(basename "$site_dir")"
+        else
+            echo "❌ Failed to remove php-error.php from $(basename "$site_dir")"
+        fi
+    else
+        echo "ℹ️ php-error.php not found in $(basename "$site_dir")"
+    fi
+}
+
+# Check arguments
+if [ $# -lt 2 ]; then
+    show_usage
+    exit 1
+fi
+
+ACTION="$1"
+TARGET="$2"
+
+# Validate action
+if [ "$ACTION" != "add" ] && [ "$ACTION" != "remove" ]; then
+    echo "❌ Error: Invalid action '$ACTION'. Use 'add' or 'remove'."
+    show_usage
+    exit 1
+fi
+
+# Handle 'all' target
+if [ "$TARGET" = "all" ]; then
+    echo "🔍 Processing all directories in $SCRIPT_DIR..."
+    
+    for dir in "$SCRIPT_DIR"/*; do
+        if [ -d "$dir" ] && [ "$(basename "$dir")" != ".git" ]; then
+            if [ "$ACTION" = "add" ]; then
+                add_php_error "$dir"
+            else
+                remove_php_error "$dir"
+            fi
+        fi
+    done
+else
+    # Handle specific site
+    SITE_DIR="$SCRIPT_DIR/$TARGET"
+    
+    if [ ! -d "$SITE_DIR" ]; then
+        echo "❌ Error: Directory '$TARGET' not found in $SCRIPT_DIR"
+        exit 1
+    fi
+    
+    if [ "$ACTION" = "add" ]; then
+        add_php_error "$SITE_DIR"
+    else
+        remove_php_error "$SITE_DIR"
+    fi
+fi
+
+echo ""
+echo "🎉 Operation completed!"
