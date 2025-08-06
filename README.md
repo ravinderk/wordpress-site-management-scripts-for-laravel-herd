@@ -112,16 +112,15 @@ Manages custom PHP error templates across WordPress sites.
 
 ```
 ~/Herd/
-├── wp.new          # Site creation script
-├── wp.delete       # Site deletion script
-├── herd.xdebug     # Xdebug management script
+├── wp.new           # Site creation script
+├── wp.delete        # Site deletion script
+├── herd.xdebug      # Xdebug management script
 ├── php-error.manage # PHP error template management script
-├── README.md       # This file
-├── .gitignore      # Git ignore rules
-└── your-sites/     # Created WordPress sites
-    ├── site1/
-    ├── site2/
-    └── ...
+├── README.md        # This file
+├── .gitignore       # Git ignore rules
+└── your-sites-1/    # Created WordPress site
+└── your-sites-2/    # Created WordPress site
+ └── ...
 ```
 
 ## 🔧 Configuration
