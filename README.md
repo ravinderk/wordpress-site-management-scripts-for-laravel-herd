@@ -118,9 +118,9 @@ Manages custom PHP error templates across WordPress sites.
 ├── php-error.manage # PHP error template management script
 ├── README.md        # This file
 ├── .gitignore       # Git ignore rules
-└── your-sites-1/    # Created WordPress site
-└── your-sites-2/    # Created WordPress site
- └── ...
+├── your-sites-1/    # Created WordPress site
+├── your-sites-2/    # Created WordPress site
+└── ...
 ```
 
 ## 🔧 Configuration
