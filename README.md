@@ -2,12 +2,16 @@
 
 A collection of bash scripts to easily create and delete WordPress sites using [Laravel Herd](https://herd.laravel.com/) and [WP-CLI](https://wp-cli.org/) for local development.
 
+> **⚠️ Disclaimer**: These scripts have been tested on macOS Sonoma (14.x) running on a MacBook Pro 2019. While they should work on other macOS versions and hardware, your mileage may vary.
+
 ## 📚 Table of Contents
 
 - [Prerequisites](#-prerequisites)
 - [Scripts](#-scripts)
   - [wp.new - WordPress Site Creation](#wpnew---wordpress-site-creation)
   - [wp.delete - WordPress Site Deletion](#wpdelete---wordpress-site-deletion)
+  - [herd.xdebug - Xdebug Management](#herdxdebug---xdebug-management)
+  - [php-error.manage - PHP Error Template Management](#php-errormanage---php-error-template-management)
 - [File Structure](#-file-structure)
 - [Configuration](#-configuration)
 - [Troubleshooting](#️-troubleshooting)
@@ -15,6 +19,7 @@ A collection of bash scripts to easily create and delete WordPress sites using [
 - [Included WordPress Development Plugins](#-included-wordpress-development-plugins)
 - [Debugging Setup](#-debugging-setup)
 - [Contributing](#-contributing)
+- [Changelog](#-changelog)
 - [License](#-license)
 
 ## 📋 Prerequisites
@@ -23,8 +28,13 @@ Before using these scripts, ensure you have the following installed:
 
 - **[Laravel Herd](https://herd.laravel.com/)** - Local PHP development environment
 - **[WP-CLI](https://wp-cli.org/)** - Command line interface for WordPress
+
+### Recommended Database Management Tools
+
+For viewing and managing your WordPress databases, we recommend:
+
 - **[DBngin](https://dbngin.com/)** - Free database management tool with intuitive GUI for viewing database tables and data
-- **[TablePlus](https://tableplus.com/)** (optional) - Modern database management tool with intuitive GUI for viewing database tables and data
+- **[TablePlus](https://tableplus.com/)** - Modern database management tool with intuitive GUI for viewing database tables and data
 
 ## 🚀 Scripts
 
@@ -46,20 +56,6 @@ Creates a new WordPress site with sensible defaults and recommended plugins.
 ./wp.new
 ```
 
-#### What it does
-
-1. Validates WP-CLI and Herd installation
-2. Prompts for site configuration (with smart defaults)
-3. Downloads WordPress core
-4. Creates `wp-config.php`
-5. Creates main database (`sitename_db`) and test database (`sitename_db_test`)
-6. Installs WordPress
-7. Installs recommended plugins:
-   - **WP Mail Logging** - Captures all emails for debugging
-   - **Query Monitor** - Debug bar for database queries and performance
-   - **WP Crontrol** - Manage WordPress cron jobs
-8. Enables HTTPS via Herd
-
 #### Default Credentials
 
 - **Username**: `admin`
@@ -70,27 +66,47 @@ Creates a new WordPress site with sensible defaults and recommended plugins.
 
 Safely removes WordPress sites and all associated data.
 
-#### Features
-
-- 🔍 **Site Validation** - Verifies WordPress installation before deletion
-- 🗄️ **Complete Cleanup** - Removes databases, files, and certificates
-- ⚠️ **Safety Checks** - Requires explicit confirmation
-- 🧹 **No Traces** - Removes both main and test databases
-
 #### Usage
 
 ```bash
 ./wp.delete
 ```
 
-#### What it does
+### herd.xdebug - Xdebug Management
 
-1. Validates the site exists and is a WordPress installation
-2. Reads database configuration from `wp-config.php`
-3. Shows what will be deleted and asks for confirmation
-4. Removes HTTPS certificate
-5. Drops main and test databases
-6. Removes site directory
+Unified script to enable or disable Xdebug across all PHP versions in Herd.
+
+#### Usage
+
+```bash
+./herd.xdebug on   # Enable Xdebug for debugging
+./herd.xdebug off  # Disable Xdebug for better performance
+```
+
+#### Features
+
+- 🔧 **Multi-Version Support** - Configures all PHP versions in Herd
+- ⚡ **Auto Restart** - Automatically restarts Herd after configuration
+- 🎯 **Smart Detection** - Only configures PHP versions with Xdebug installed
+
+### php-error.manage - PHP Error Template Management
+
+Manages custom PHP error templates across WordPress sites.
+
+#### Usage
+
+```bash
+./php-error.manage add mysite     # Add error template to specific site
+./php-error.manage remove mysite  # Remove error template from specific site
+./php-error.manage add all        # Add to all WordPress sites
+./php-error.manage remove all     # Remove from all WordPress sites
+```
+
+#### Features
+
+- 🎨 **Beautiful Error Pages** - Custom styled error templates
+- 📊 **Stack Trace Formatting** - Formatted and readable error output
+- 🔍 **Smart Detection** - Only applies to WordPress sites
 
 ## 📁 File Structure
 
@@ -98,6 +114,8 @@ Safely removes WordPress sites and all associated data.
 ~/Herd/
 ├── wp.new          # Site creation script
 ├── wp.delete       # Site deletion script
+├── herd.xdebug     # Xdebug management script
+├── php-error.manage # PHP error template management script
 ├── README.md       # This file
 ├── .gitignore      # Git ignore rules
 └── your-sites/     # Created WordPress sites
@@ -139,7 +157,7 @@ php -d memory_limit=-1 -d max_execution_time=0 $(which wp) ...
 
 Ensure the scripts are executable:
 ```bash
-chmod +x wp.new wp.delete
+chmod +x wp.new wp.delete herd.xdebug php-error.manage
 ```
 
 ## 🔄 Re-running Scripts
@@ -178,16 +196,29 @@ These plugins are automatically installed and activated during site creation to 
 
 ### Xdebug Configuration
 
-For debugging WordPress with Xdebug, follow these setup guides:
+Use the included `herd.xdebug` script to quickly enable/disable Xdebug:
+
+```bash
+./herd.xdebug on   # Enable debugging
+./herd.xdebug off  # Disable for performance
+```
+
+For detailed IDE setup, follow these guides:
 
 1. **[Official Herd Xdebug Documentation](https://herd.laravel.com/docs/macos/debugging/xdebug)** - Complete setup guide for enabling Xdebug in Herd
 2. **[VS Code + Herd Xdebug Setup](https://thomashysselinckx.medium.com/activating-xdebug-on-visual-studio-code-laravel-herd-cfd0553d26e0)** - Detailed guide for configuring Xdebug with Visual Studio Code
 
-These resources will help you set up step-by-step debugging for your WordPress development workflow.
+### PHP Error Templates
+
+Custom error templates provide beautiful, readable error pages during development. Use the `php-error.manage` script to add them to your sites.
 
 ## 🤝 Contributing
 
-Feel free to submit issues and enhancement requests!
+Feel free to submit issues and enhancement requests! See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+
+## 📈 Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes and updates.
 
 ## 📄 License
 
