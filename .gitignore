@@ -7,8 +7,11 @@
 !herd.xdebug
 !herd.php
 !wp.php
+!help
 !.php-error-template
 !README.md
 !LICENSE
 !CONTRIBUTING.md
 !CHANGELOG.md
+!docs/
+!docs/**

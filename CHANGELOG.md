@@ -5,7 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.1.0] - 2025-07-07
+
+### ✨ Added
+- **🔍 Dry Run Mode** - Added `--dry-run` support to all scripts for previewing changes
+- **🐘 herd.php** - New PHP settings management script for FPM configuration
+- **📊 PHP Logging Control** - Enable/disable PHP error logging across all versions
+- **💻 Enhanced CLI Interface** - Consistent `show_usage()` functions across all scripts
+- **🎯 Smart State Detection** - Scripts now detect current state and skip unnecessary changes
+- **📝 Improved Error Handling** - Better validation and error messages throughout
+
+### 🔄 Changed
+- **📛 Script Renaming** - `php-error.manage` renamed to `wp.php` with new syntax
+- **🎨 Command Structure** - `wp.php` now uses `error-template on/off` syntax
+- **📚 Enhanced Documentation** - Updated README with comprehensive command examples
+- **🔧 Better CLI Experience** - All scripts now support `--help` and provide usage information
+
+### 🐛 Fixed
+- **🔢 Integer Expression Errors** - Fixed bash comparison issues in herd.php
+- **📁 Template Path Issues** - Corrected relative path handling in wp.php
+- **🔄 Idempotent Operations** - All scripts now properly handle repeated execution
+- **💾 Memory Management** - Improved handling of WP-CLI memory limits
+
+### 🎨 Improved
+- **🎭 Bash Compatibility** - Fixed bash substitution issues for broader compatibility
+- **📊 Status Reporting** - Better progress indication and result summaries
+- **🔍 State Validation** - Enhanced checking of current configuration states
+- **⚡ Performance** - Optimized script execution and reduced unnecessary operations
 
 ## [2.0.0] - 2025-07-06
 
@@ -83,3 +109,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **🗑️ Removed** for now removed features
 - **🐛 Fixed** for any bug fixes
 - **🔒 Security** for vulnerability fixes
+- **🎨 Improved** for enhancements and optimizations

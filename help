@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# --- Help Command for WordPress Site Management Scripts ---
+# This script displays all available commands and their usage
+#
+# Date: January 2025
+
+echo "🚀 --- WordPress Site Management Scripts for Laravel Herd --- 🚀"
+echo "Available commands and their usage:"
+echo "----------------------------------------------------"
+echo ""
+
+echo "📝 WORDPRESS SITE MANAGEMENT"
+echo "  wp.new                    Create a new WordPress site (interactive)"
+echo "  wp.new --dry-run          Preview WordPress site creation"
+echo "  wp.delete                 Delete an existing WordPress site (interactive)"
+echo "  wp.delete --dry-run       Preview WordPress site deletion"
+echo ""
+
+echo "🐛 PHP & DEBUGGING"
+echo "  herd.xdebug on            Enable Xdebug for debugging"
+echo "  herd.xdebug off           Disable Xdebug for better performance"
+echo "  herd.xdebug on --dry-run  Preview Xdebug configuration changes"
+echo "  herd.php log on           Enable PHP error logging"
+echo "  herd.php log off          Disable PHP error logging"
+echo "  herd.php log on --dry-run Preview PHP logging changes"
+echo ""
+
+echo "🛠️ WORDPRESS TOOLS"
+echo "  wp.php error-template on SITE    Add error template to specific site"
+echo "  wp.php error-template off SITE   Remove error template from specific site"
+echo "  wp.php error-template on all     Add error templates to all WordPress sites"
+echo "  wp.php error-template off all    Remove error templates from all sites"
+echo "  wp.php error-template on all --dry-run  Preview template changes"
+echo ""
+
+echo "ℹ️ INFORMATION & HELP"
+echo "  help                      Show this help message"
+echo ""
+
+echo "💡 TIPS:"
+echo "  • All scripts support --dry-run to preview changes"
+echo "  • Use 'all' with wp.php to apply to all WordPress sites"
+echo "  • Default admin credentials: admin/password"
+echo "  • Sites are accessible at https://sitename.test"
+echo ""
+
+echo "📚 DOCUMENTATION:"
+echo "  docs/COMMANDS.md          Complete command reference"
+echo "  docs/WORDPRESS.md         WordPress site management guide"
+echo "  docs/PHP-DEBUGGING.md     PHP and debugging setup"
+echo "  docs/CONFIGURATION.md     Configuration and customization"
+echo "  docs/TROUBLESHOOTING.md   Common issues and solutions"
+echo ""
+
+echo "🔗 QUICK EXAMPLES:"
+echo "  ./wp.new                  # Create a new site"
+echo "  ./herd.xdebug on          # Enable debugging"
+echo "  ./wp.php error-template on all  # Add error templates"
+echo "  ./wp.delete --dry-run     # Preview site deletion"
+echo ""
+
+echo "🆘 NEED HELP?"
+echo "  • Check docs/TROUBLESHOOTING.md for common issues"
+echo "  • Use --dry-run to preview any command"
+echo "  • Ensure Herd and DBngin are running"
+echo ""
+
+echo "---"
+echo "Happy WordPress Development! 🎉"
