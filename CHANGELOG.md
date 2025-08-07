@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [2.2.0] - 2025-07-07
+
+### ✨ Added
+- **📖 Help Command** - New `help` script to display all available commands and usage
+- **📚 Organized Documentation** - Restructured docs into focused, topic-specific files
+- **🔗 Better Navigation** - Updated README with clear documentation links and structure
+- **💡 Command Discovery** - Easy-to-use help system for better user experience
+
+### 🔄 Changed
+- **📛 Documentation Structure** - Merged WordPress tools into main WordPress documentation
+- **📝 README Simplification** - Streamlined README for quick start and better usability
+- **🎯 User-Focused Content** - Improved language and examples for end users
+- **📋 File Organization** - Renamed documentation files to use capital letters (COMMANDS.md, etc.)
+
+### 🎨 Improved
+- **🔍 Command Reference** - Comprehensive command overview with examples
+- **📖 Documentation Quality** - Better organization and more practical examples
+- **🆘 Help System** - Instant access to all commands with `./help`
+- **🎭 User Experience** - More intuitive documentation structure and navigation
+
+### 🐛 Fixed
+- **📁 Git Tracking** - Fixed .gitignore to properly include docs directory and files
+- **🔗 Documentation Links** - Updated all internal documentation references
+- **📝 Duplicate Content** - Removed redundant sections from README
+
 ## [2.1.0] - 2025-07-07
 
 ### ✨ Added
@@ -33,7 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **🔍 State Validation** - Enhanced checking of current configuration states
 - **⚡ Performance** - Optimized script execution and reduced unnecessary operations
 
-## [2.0.0] - 2025-07-06
+## [2.0.0] - 2025-01-XX
 
 ### ✨ Added
 - **🐛 herd.xdebug** - Unified Xdebug management script replacing separate on/off scripts
