@@ -6,11 +6,11 @@ Complete reference for all WordPress site management scripts.
 
 | Command | Description | Dry Run | Documentation |
 |---------|-------------|---------|---------------|
-| `wp.new` | Create WordPress sites | ✅ | [WordPress Management](docs/commands/WORDPRESS-COMMANDS.md#wpnew---wordpress-site-creation) |
-| `wp.delete` | Delete WordPress sites | ✅ | [WordPress Management](docs/commands/WORDPRESS-COMMANDS.md#wpdelete---wordpress-site-deletion) |
-| `wp.php` | WordPress tools & templates | ✅ | [WordPress Management](docs/commands/WORDPRESS-COMMANDS.md#wpphp---wordpress-tools--templates) |
-| `herd.xdebug` | Enable/disable Xdebug | ✅ | [PHP & Debugging](docs/commands/HERD-COMMANDS.md#herdxdebug---xdebug-management) |
-| `herd.php` | Manage PHP settings | ✅ | [PHP & Debugging](docs/commands/HERD-COMMANDS.md#herdphp---php-settings-management) |
+| `wp.new` | Create WordPress sites | ✅ | [WordPress Management](WORDPRESS-COMMANDS.md#wpnew---wordpress-site-creation) |
+| `wp.delete` | Delete WordPress sites | ✅ | [WordPress Management](WORDPRESS-COMMANDS.md#wpdelete---wordpress-site-deletion) |
+| `wp.php` | WordPress tools & templates | ✅ | [WordPress Management](dWORDPRESS-COMMANDS.md#wpphp---wordpress-tools--templates) |
+| `herd.xdebug` | Enable/disable Xdebug | ✅ | [PHP & Debugging](dHERD-COMMANDS.md#herdxdebug---xdebug-management) |
+| `herd.php` | Manage PHP settings | ✅ | [PHP & Debugging](HERD-COMMANDS.md#herdphp---php-settings-management) |
 
 > 💡 **Tip**: All scripts support `--dry-run` for previewing changes
 
