@@ -12,9 +12,9 @@ A collection of bash scripts to easily create and delete WordPress sites using [
 
 ## 📚 Documentation
 
-- **[Commands Overview](docs/COMMANDS.md)** - Complete list of all available commands
-- **[WordPress Management](docs/WORDPRESS-COMMANDS.md)** - wp.new, wp.delete, and wp.php commands
-- **[PHP & Debugging](docs/HERD-COMMANDS.md)** - herd.xdebug and herd.php commands  
+- **[Commands Overview](docs/commands/COMMANDS.md)** - Complete list of all available commands
+- **[WordPress Management](docs/commands/WORDPRESS-COMMANDS.md)** - wp.new, wp.delete, and wp.php commands
+- **[PHP & Debugging](docs/commands/HERD-COMMANDS.md)** - herd.xdebug and herd.php commands  
 - **[Configuration](docs/CONFIGURATION.md)** - Default settings and customization
 - **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
 
