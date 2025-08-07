@@ -12,6 +12,14 @@ Complete reference for all WordPress site management scripts.
 | `herd.xdebug` | Enable/disable Xdebug | ✅ | [PHP & Debugging](php-debugging.md) |
 | `herd.php` | Manage PHP settings | ✅ | [PHP & Debugging](php-debugging.md) |
 
+> 💡 **Tip**: All scripts support `--dry-run` for previewing changes
+
+## 🆘 Available Commands
+
+```bash
+./help                     # Show all available commands
+```
+
 ## 🚀 WordPress Management
 
 ### wp.new - Create Sites
