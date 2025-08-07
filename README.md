@@ -10,6 +10,8 @@ A collection of bash scripts to easily create and delete WordPress sites using [
 2. **Enable MySQL Service**: Open [DBngin](https://dbngin.com/) and start a MySQL server instance.
 3. **Create a WordPress site**: `./wp.new`
 
+> 💡 **Tip**: We recommend cloning this repository directly as your Herd root directory for the best experience:
+
 ## 📚 Documentation
 
 - **[Commands Overview](docs/commands/COMMANDS.md)** - Complete list of all available commands
