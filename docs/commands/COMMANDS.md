@@ -9,7 +9,7 @@ Complete reference for all WordPress site management scripts.
 | `wp.new` | Create WordPress sites | ✅ | [WordPress Management](WORDPRESS-COMMANDS.md#wpnew---wordpress-site-creation) |
 | `wp.delete` | Delete WordPress sites | ✅ | [WordPress Management](WORDPRESS-COMMANDS.md#wpdelete---wordpress-site-deletion) |
 | `wp.php` | WordPress tools & templates | ✅ | [WordPress Management](dWORDPRESS-COMMANDS.md#wpphp---wordpress-tools--templates) |
-| `herd.xdebug` | Enable/disable Xdebug | ✅ | [PHP & Debugging](dHERD-COMMANDS.md#herdxdebug---xdebug-management) |
+| `herd.xdebug` | Enable/disable Xdebug | ✅ | [PHP & Debugging](HERD-COMMANDS.md#herdxdebug---xdebug-management) |
 | `herd.php` | Manage PHP settings | ✅ | [PHP & Debugging](HERD-COMMANDS.md#herdphp---php-settings-management) |
 
 > 💡 **Tip**: All scripts support `--dry-run` for previewing changes
