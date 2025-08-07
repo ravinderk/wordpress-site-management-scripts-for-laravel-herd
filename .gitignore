@@ -5,6 +5,7 @@
 !wp.new
 !wp.delete
 !herd.xdebug
+!herd.php
 !php-error.manage
 !.php-error-template
 !README.md
