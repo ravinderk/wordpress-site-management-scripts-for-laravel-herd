@@ -12,9 +12,9 @@ A collection of bash scripts to easily create and delete WordPress sites using [
 
 ## 📚 Documentation
 
-- **[Commands Overview](docs/commands/COMMANDS.md)** - Complete list of all available commands
-- **[WordPress Management](docs/commands/WORDPRESS-COMMANDS.md)** - wp.new, wp.delete, and wp.php commands
-- **[PHP & Debugging](docs/commands/HERD-COMMANDS.md)** - herd.xdebug and herd.php commands  
+- **[Commands Overview](docs/COMMANDS.md)** - Complete list of all available commands
+- **[WordPress Management](docs/WORDPRESS-COMMANDS.md)** - wp.new, wp.delete, and wp.php commands
+- **[PHP & Debugging](docs/HERD-COMMANDS.md)** - herd.xdebug and herd.php commands  
 - **[Configuration](docs/CONFIGURATION.md)** - Default settings and customization
 - **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
 
@@ -33,6 +33,33 @@ A collection of bash scripts to easily create and delete WordPress sites using [
 ```bash
 ./help                     # Show all available commands
 ```
+> 💡 **Tip**: All scripts support `--dry-run` for previewing changes
+
+## 🔧 Active Development
+
+We are actively adding new commands and features to make WordPress development with Laravel Herd more productive and enjoyable! 
+
+### 🌟 What's Coming Next?
+- More automation scripts for common WordPress tasks
+- Enhanced debugging and profiling tools
+- Better integration with popular WordPress development workflows
+- Additional template management features
+
+### 🔍 Check the Development Branch
+If you don't find something you're looking for, check our `develop` branch for upcoming features and experimental commands:
+
+```bash
+git checkout develop
+```
+
+### 💬 We Love Your Feedback!
+Missing a feature or have an idea for improvement? We'd love to hear from you!
+
+- **[Open an Issue](../../issues)** - Request features, report bugs, or suggest improvements
+- **[Join Discussions](../../discussions)** - Share your WordPress development workflows
+- **[Contribute](CONTRIBUTING.md)** - Help us build better tools for the community
+
+Your feedback helps us prioritize which commands and features to build next. Every suggestion is valuable to us! 🙏
 
 ## 🤝 Contributing
 
@@ -49,3 +76,5 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ---
 
 **Happy WordPress Development!** 🎉
+
+*Built with ❤️ for the WordPress community using Laravel Herd*
