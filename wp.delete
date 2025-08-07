@@ -11,6 +11,31 @@ echo "This script will help you safely remove a WordPress site."
 echo "⚠️ WARNING: This action is irreversible!"
 echo "----------------------------------------------------"
 
+# Function to show usage
+show_usage() {
+    echo "🗑️ --- WordPress Site Deletion for Herd --- 🗑️"
+    echo "This script safely removes WordPress sites and databases."
+    echo "⚠️ WARNING: This action is irreversible!"
+    echo "----------------------------------------------------"
+    echo ""
+    echo "Usage: $0 [--dry-run]"
+    echo ""
+    echo "Options:"
+    echo "  --dry-run       - Show what would be deleted without removing anything"
+    echo ""
+    echo "This interactive script will:"
+    echo "  • Validate the WordPress installation"
+    echo "  • Remove the site directory"
+    echo "  • Drop main and test databases"
+    echo "  • Remove HTTPS certificates"
+    echo ""
+    echo "Safety features:"
+    echo "  🔍 Validates WordPress installation before deletion"
+    echo "  ⚠️ Requires explicit 'DELETE' confirmation"
+    echo "  📊 Shows what will be deleted before proceeding"
+    echo "  🧹 Complete cleanup of all related files"
+}
+
 # --- Function to check if a command exists ---
 command_exists () {
   type "$1" &> /dev/null ;
@@ -77,62 +102,102 @@ if [ -n "$DB_NAME" ]; then
 fi
 echo "  - Herd HTTPS certificate for $SITE_NAME.test"
 echo ""
-read -p "Are you absolutely sure you want to delete this site? Type 'DELETE' to confirm: " CONFIRM
 
-if [ "$CONFIRM" != "DELETE" ]; then
-    echo "❌ Deletion cancelled. Site remains intact."
-    exit 0
+# Check for dry-run flag
+DRY_RUN="false"
+if [ $# -eq 1 ] && [ "$1" = "--dry-run" ]; then
+    DRY_RUN="true"
+    echo "🔍 --- DRY RUN MODE ENABLED --- 🔍"
+    echo "This is a preview - no actual changes will be made."
+    echo ""
+elif [ $# -gt 0 ]; then
+    echo "❌ Error: Invalid option '$1'. Use --dry-run or omit."
+    show_usage
+    exit 1
+fi
+
+if [ "$DRY_RUN" = "true" ]; then
+    echo "🔍 [DRY RUN] This is what would be deleted."
+    echo "🔍 [DRY RUN] No actual deletion would occur."
+else
+    read -p "Are you absolutely sure you want to delete this site? Type 'DELETE' to confirm: " CONFIRM
+    
+    if [ "$CONFIRM" != "DELETE" ]; then
+        echo "❌ Deletion cancelled. Site remains intact."
+        exit 0
+    fi
 fi
 
 # --- 6. Remove Herd HTTPS certificate ---
-echo "🔓 Removing HTTPS certificate..."
-herd unsecure "$SITE_NAME" 2>/dev/null
-if [ $? -eq 0 ]; then
-    echo "✅ HTTPS certificate removed"
+if [ "$DRY_RUN" = "true" ]; then
+    echo "🔍 [DRY RUN] Would remove HTTPS certificate..."
 else
-    echo "⚠️ Warning: Could not remove HTTPS certificate (may not exist)"
+    echo "🔓 Removing HTTPS certificate..."
+    herd unsecure "$SITE_NAME" 2>/dev/null
+    if [ $? -eq 0 ]; then
+        echo "✅ HTTPS certificate removed"
+    else
+        echo "⚠️ Warning: Could not remove HTTPS certificate (may not exist)"
+    fi
 fi
 
 # --- 7. Drop database ---
 if [ -n "$DB_NAME" ]; then
-    echo "🗄️ Dropping database '$DB_NAME'..."
-    php -d memory_limit=-1 $(which wp) db drop --yes --path="$SITE_PATH" 2>/dev/null
-    if [ $? -eq 0 ]; then
-        echo "✅ Database '$DB_NAME' dropped successfully"
+    if [ "$DRY_RUN" = "true" ]; then
+        echo "🔍 [DRY RUN] Would drop database '$DB_NAME'"
+        # Also show test database action in dry run
+        TEST_DB_NAME="${DB_NAME}_test"
+        echo "🔍 [DRY RUN] Would check and drop test database '$TEST_DB_NAME' if it exists"
     else
-        echo "⚠️ Warning: Could not drop database '$DB_NAME'"
-    fi
-    
-    # Also drop test database if it exists
-    TEST_DB_NAME="${DB_NAME}_test"
-    echo "🗄️ Checking for test database '$TEST_DB_NAME'..."
-    # Check if test database exists by trying to connect
-    php -d memory_limit=-1 $(which wp) db query "USE $TEST_DB_NAME;" --path="$SITE_PATH" 2>/dev/null
-    if [ $? -eq 0 ]; then
-        echo "🗄️ Dropping test database '$TEST_DB_NAME'..."
-        mysql -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASSWORD" -e "DROP DATABASE IF EXISTS $TEST_DB_NAME;" 2>/dev/null
+        echo "🗄️ Dropping database '$DB_NAME'..."
+        php -d memory_limit=-1 $(which wp) db drop --yes --path="$SITE_PATH" 2>/dev/null
         if [ $? -eq 0 ]; then
-            echo "✅ Test database '$TEST_DB_NAME' dropped successfully"
+            echo "✅ Database '$DB_NAME' dropped successfully"
         else
-            echo "⚠️ Warning: Could not drop test database '$TEST_DB_NAME'"
+            echo "⚠️ Warning: Could not drop database '$DB_NAME'"
         fi
-    else
-        echo "ℹ️ Test database '$TEST_DB_NAME' does not exist"
+        
+        # Also drop test database if it exists
+        TEST_DB_NAME="${DB_NAME}_test"
+        echo "🗄️ Checking for test database '$TEST_DB_NAME'..."
+        # Check if test database exists by trying to connect
+        php -d memory_limit=-1 $(which wp) db query "USE $TEST_DB_NAME;" --path="$SITE_PATH" 2>/dev/null
+        if [ $? -eq 0 ]; then
+            echo "🗄️ Dropping test database '$TEST_DB_NAME'..."
+            mysql -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASSWORD" -e "DROP DATABASE IF EXISTS $TEST_DB_NAME;" 2>/dev/null
+            if [ $? -eq 0 ]; then
+                echo "✅ Test database '$TEST_DB_NAME' dropped successfully"
+            else
+                echo "⚠️ Warning: Could not drop test database '$TEST_DB_NAME'"
+            fi
+        else
+            echo "ℹ️ Test database '$TEST_DB_NAME' does not exist"
+        fi
     fi
 fi
 
 # --- 8. Remove site directory ---
-echo "📂 Removing site directory..."
-rm -rf "$SITE_PATH"
-if [ $? -eq 0 ]; then
-    echo "✅ Site directory removed successfully"
+if [ "$DRY_RUN" = "true" ]; then
+    echo "🔍 [DRY RUN] Would remove site directory: $SITE_PATH"
 else
-    echo "❌ Error: Failed to remove site directory"
-    exit 1
+    echo "📂 Removing site directory..."
+    rm -rf "$SITE_PATH"
+    if [ $? -eq 0 ]; then
+        echo "✅ Site directory removed successfully"
+    else
+        echo "❌ Error: Failed to remove site directory"
+        exit 1
+    fi
 fi
 
-echo ""
-echo "🎉 --- Deletion Complete! --- 🎉"
-echo "WordPress site '$SITE_NAME' has been completely removed."
-echo ""
-echo "🧹 All clean!"
+if [ "$DRY_RUN" = "true" ]; then
+    echo ""
+    echo "🔍 [DRY RUN] Preview completed!"
+    echo "💡 Run without --dry-run to actually delete the site."
+else
+    echo ""
+    echo "🎉 --- Deletion Complete! --- 🎉"
+    echo "WordPress site '$SITE_NAME' has been completely removed."
+    echo ""
+    echo "🧹 All clean!"
+fi

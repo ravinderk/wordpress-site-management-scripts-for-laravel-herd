@@ -11,15 +11,19 @@ show_usage() {
     echo "This script enables or disables Xdebug for debugging."
     echo "----------------------------------------------------"
     echo ""
-    echo "Usage: $0 [on|off]"
+    echo "Usage: $0 [on|off] [--dry-run]"
     echo ""
     echo "Commands:"
     echo "  on      - Enable Xdebug for debugging"
     echo "  off     - Disable Xdebug for better performance"
     echo ""
+    echo "Options:"
+    echo "  --dry-run       - Show what would be changed without applying"
+    echo ""
     echo "Examples:"
     echo "  $0 on     # Enable Xdebug"
     echo "  $0 off    # Disable Xdebug"
+    echo "  $0 on --dry-run   # Preview enabling Xdebug"
 }
 
 # --- Function to check if a command exists ---
@@ -32,6 +36,7 @@ configure_xdebug() {
     local mode="$1"
     local action_desc="$2"
     local emoji="$3"
+    local dry_run="$4"
     
     echo "$emoji --- $action_desc Xdebug for Laravel Herd --- $emoji"
     echo "This script will $action_desc Xdebug."
@@ -74,12 +79,20 @@ configure_xdebug() {
                     # Check if xdebug.mode exists and update/add it
                     if grep -q "^xdebug.mode" "$PHP_INI_FILE"; then
                         # Update existing xdebug.mode
-                        sed -i '' "s/^xdebug.mode.*/xdebug.mode=$mode/" "$PHP_INI_FILE"
-                        echo "✅ Updated xdebug.mode=$mode in PHP $PHP_VERSION"
+                        if [ "$dry_run" = "true" ]; then
+                            echo "📝 [Dry Run] Update xdebug.mode=$mode in PHP $PHP_VERSION"
+                        else
+                            sed -i '' "s/^xdebug.mode.*/xdebug.mode=$mode/" "$PHP_INI_FILE"
+                            echo "✅ Updated xdebug.mode=$mode in PHP $PHP_VERSION"
+                        fi
                     else
                         # Add xdebug.mode if it doesn't exist
-                        echo "xdebug.mode=$mode" >> "$PHP_INI_FILE"
-                        echo "✅ Added xdebug.mode=$mode to PHP $PHP_VERSION"
+                        if [ "$dry_run" = "true" ]; then
+                            echo "📝 [Dry Run] Add xdebug.mode=$mode to PHP $PHP_VERSION"
+                        else
+                            echo "xdebug.mode=$mode" >> "$PHP_INI_FILE"
+                            echo "✅ Added xdebug.mode=$mode to PHP $PHP_VERSION"
+                        fi
                     fi
                 else
                     echo "⏭️ Skipping PHP $PHP_VERSION - Xdebug not configured in php.ini"
@@ -93,12 +106,16 @@ configure_xdebug() {
     echo "✅ Xdebug ${action_desc}d successfully!"
     
     # Restart Herd to apply changes
-    echo "🔄 Restarting Herd to apply configuration changes..."
-    herd restart
-    if [ $? -eq 0 ]; then
-        echo "✅ Herd restarted successfully!"
+    if [ "$dry_run" = "true" ]; then
+        echo "🔄 [Dry Run] Herd restart (not actually restarting)"
     else
-        echo "⚠️ Warning: Failed to restart Herd. You may need to restart manually."
+        echo "🔄 Restarting Herd to apply configuration changes..."
+        herd restart
+        if [ $? -eq 0 ]; then
+            echo "✅ Herd restarted successfully!"
+        else
+            echo "⚠️ Warning: Failed to restart Herd. You may need to restart manually."
+        fi
     fi
     
     if [ "$mode" = "debug" ]; then
@@ -119,19 +136,28 @@ configure_xdebug() {
 }
 
 # Check arguments
-if [ $# -ne 1 ]; then
+if [ $# -lt 1 ]; then
     show_usage
     exit 1
 fi
 
 ACTION="$1"
+DRY_RUN="false"
+
+# Check for dry-run flag
+if [ $# -eq 2 ] && [ "$2" = "--dry-run" ]; then
+    DRY_RUN="true"
+elif [ $# -gt 1 ] && [ "$2" != "--dry-run" ]; then
+    echo "❌ Error: Invalid option '$2'. Use --dry-run or omit."
+    exit 1
+fi
 
 case "$ACTION" in
     "on")
-        configure_xdebug "debug" "Enabl" "🐛"
+        configure_xdebug "debug" "Enabl" "🐛" "$DRY_RUN"
         ;;
     "off")
-        configure_xdebug "off" "Disabl" "🐛❌"
+        configure_xdebug "off" "Disabl" "🐛❌" "$DRY_RUN"
         ;;
     *)
         echo "❌ Error: Invalid action '$ACTION'. Use 'on' or 'off'."

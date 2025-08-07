@@ -12,6 +12,35 @@ echo "✨ --- WordPress Site Setup for Herd (using WP-CLI) --- ✨"
 echo "This script will help you set up a new WordPress site using WP-CLI."
 echo "----------------------------------------------------"
 
+# Function to show usage
+show_usage() {
+    echo "✨ --- WordPress Site Setup for Herd (using WP-CLI) --- ✨"
+    echo "This script automates WordPress site creation with Herd."
+    echo "----------------------------------------------------"
+    echo ""
+    echo "Usage: $0 [--dry-run]"
+    echo ""
+    echo "Options:"
+    echo "  --dry-run       - Show what would be done without making changes"
+    echo ""
+    echo "This interactive script will:"
+    echo "  • Create a new WordPress site with smart defaults"
+    echo "  • Set up main and test databases"
+    echo "  • Install essential development plugins"
+    echo "  • Enable HTTPS via Herd"
+    echo ""
+    echo "Features:"
+    echo "  ✅ Idempotent - Safe to run multiple times"
+    echo "  🗄️ Creates both main and test databases"
+    echo "  🔒 Automatic HTTPS setup"
+    echo "  🔌 Pre-installs development plugins"
+    echo ""
+    echo "Default credentials:"
+    echo "  Username: admin"
+    echo "  Password: password"
+    echo "  Email: admin@example.com"
+}
+
 # --- Function to check if a command exists ---
 command_exists () {
   type "$1" &> /dev/null ;
@@ -103,20 +132,28 @@ fi
 echo "" # Spacer
 
 # --- 3. Create Site Directory ---
-echo "📂 Creating site directory: $SITE_PATH"
-mkdir -p "$SITE_PATH"
-if [ $? -ne 0 ]; then
-    echo "❌ Error: Could not create directory $SITE_PATH. Check permissions."
-    exit 1
+if [ "$DRY_RUN" = "true" ]; then
+    echo "🔍 [DRY RUN] Would create site directory: $SITE_PATH"
+else
+    echo "📂 Creating site directory: $SITE_PATH"
+    mkdir -p "$SITE_PATH"
+    if [ $? -ne 0 ]; then
+        echo "❌ Error: Could not create directory $SITE_PATH. Check permissions."
+        exit 1
+    fi
 fi
 
 # --- 4. Download WordPress using WP-CLI ---
-echo "⬇️ Downloading WordPress core to $SITE_PATH using WP-CLI..."
-# Use php directly with memory limit to run wp-cli
-php -d memory_limit=-1 -d max_execution_time=0 $(which wp) core download --path="$SITE_PATH"
-if [ $? -ne 0 ]; then
-    echo "❌ Error: Failed to download WordPress core using WP-CLI. Check your internet connection or permissions for $SITE_PATH."
-    exit 1
+if [ "$DRY_RUN" = "true" ]; then
+    echo "🔍 [DRY RUN] Would download WordPress core to $SITE_PATH using WP-CLI..."
+else
+    echo "⬇️ Downloading WordPress core to $SITE_PATH using WP-CLI..."
+    # Use php directly with memory limit to run wp-cli
+    php -d memory_limit=-1 -d max_execution_time=0 $(which wp) core download --path="$SITE_PATH"
+    if [ $? -ne 0 ]; then
+        echo "❌ Error: Failed to download WordPress core using WP-CLI. Check your internet connection or permissions for $SITE_PATH."
+        exit 1
+    fi
 fi
 
 # --- 5. Configure wp-config.php using WP-CLI ---
@@ -219,10 +256,14 @@ else
 fi
 
 echo ""
-echo "🎉 --- Setup Complete! --- 🎉"
-echo "Your WordPress site has been set up at: $SITE_PATH"
-echo ""
-echo "3. Open your browser and go to 🔗 $SITE_URL"
-echo "   Your admin login details are: Username: $WP_ADMIN_USER, Password: $WP_ADMIN_PASSWORD"
-
-echo "🥳 Happy Development!"
+if [ "$DRY_RUN" = "true" ]; then
+    echo "🔍 [DRY RUN] Preview completed!"
+    echo "💡 Run without --dry-run to apply these changes."
+else
+    echo "🎉 --- Setup Complete! --- 🎉"
+    echo "Your WordPress site has been set up at: $SITE_PATH"
+    echo ""
+    echo "3. Open your browser and go to 🔗 $SITE_URL"
+    echo "   Your admin login details are: Username: $WP_ADMIN_USER, Password: $WP_ADMIN_PASSWORD"
+    echo "🥳 Happy Development!"
+fi
