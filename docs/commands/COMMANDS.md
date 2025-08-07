@@ -20,6 +20,8 @@ Complete reference for all WordPress site management scripts.
 ./help
 ```
 
+> 💡 **Tip**: Above command will help to list available commands.
+
 ## 🚀 WordPress Management
 
 ### wp.new - Create Sites
