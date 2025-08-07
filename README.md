@@ -31,7 +31,7 @@ A collection of bash scripts to easily create and delete WordPress sites using [
 ## 🆘 Need Help?
 
 ```bash
-./help                     # Show all available commands
+./help
 ```
 > 💡 **Tip**: All scripts support `--dry-run` for previewing changes
 
