@@ -21,13 +21,13 @@ These scripts were created to bridge that gap and provide WordPress developers w
 ## 🚀 Quick Start
 
 1. **Install Prerequisites**: [Laravel Herd](https://herd.laravel.com/), [WP-CLI](https://wp-cli.org/) and [DBngin](https://dbngin.com/)
-2. **Enable MySQL Service**: Open [DBngin](https://dbngin.com/) and start a MySQL server instance.
-3. **Create a WordPress site**: `./wp.new`
-
-> 💡 **Tip**: We recommend cloning this repository directly as your Herd root directory for the best experience.
+2. **Choose Installation Method**: See our [Setup Guide](docs/SETUP.md) for complete vs. individual script installation
+3. **Enable MySQL Service**: Open [DBngin](https://dbngin.com/) and start a MySQL server instance
+4. **Create a WordPress site**: `./wp.new`
 
 ## 📚 Documentation
 
+- **[Setup Guide](docs/SETUP.md)** - Installation methods and getting started
 - **[Commands Overview](docs/commands/COMMANDS.md)** - Complete list of all available commands
 - **[WordPress Management](docs/commands/WORDPRESS-COMMANDS.md)** - wp.new, wp.delete, and wp.php commands
 - **[PHP & Debugging](docs/commands/HERD-COMMANDS.md)** - herd.xdebug and herd.php commands  
