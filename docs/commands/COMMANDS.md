@@ -6,12 +6,12 @@ Complete reference for all WordPress site management scripts.
 
 | Command | Description | Dry Run | Download | Documentation |
 |---------|-------------|---------|----------|---------------|
-| `wp.new` | Create WordPress sites | ✅ | [📥 Download](https://raw.githubusercontent.com/your-username/herd-wordpress-scripts/main/wp.new) | [WordPress Management](WORDPRESS-COMMANDS.md#wpnew---wordpress-site-creation) |
-| `wp.delete` | Delete WordPress sites | ✅ | [📥 Download](https://raw.githubusercontent.com/your-username/herd-wordpress-scripts/main/wp.delete) | [WordPress Management](WORDPRESS-COMMANDS.md#wpdelete---wordpress-site-deletion) |
-| `wp.php` | WordPress tools & templates | ✅ | [📥 Download](https://raw.githubusercontent.com/your-username/herd-wordpress-scripts/main/wp.php) | [WordPress Management](WORDPRESS-COMMANDS.md#wpphp---wordpress-tools--templates) |
-| `herd.xdebug` | Enable/disable Xdebug | ✅ | [📥 Download](https://raw.githubusercontent.com/your-username/herd-wordpress-scripts/main/herd.xdebug) | [PHP & Debugging](HERD-COMMANDS.md#herdxdebug---xdebug-management) |
-| `herd.php` | Manage PHP settings | ✅ | [📥 Download](https://raw.githubusercontent.com/your-username/herd-wordpress-scripts/main/herd.php) | [PHP & Debugging](HERD-COMMANDS.md#herdphp---php-settings-management) |
-| `help` | Show all commands | ❌ | [📥 Download](https://raw.githubusercontent.com/your-username/herd-wordpress-scripts/main/help) | Built-in help system |
+| `wp.new` | Create WordPress sites | ✅ | [📥 Download](https://raw.githubusercontent.com/ravinderk/laravel-herd-wp/refs/heads/master/wp.new) | [WordPress Management](WORDPRESS-COMMANDS.md#wpnew---wordpress-site-creation) |
+| `wp.delete` | Delete WordPress sites | ✅ | [📥 Download](https://raw.githubusercontent.com/ravinderk/laravel-herd-wp/refs/heads/master/wp.delete) | [WordPress Management](WORDPRESS-COMMANDS.md#wpdelete---wordpress-site-deletion) |
+| `wp.php` | WordPress tools & templates | ✅ | [📥 Download](https://raw.githubusercontent.com/ravinderk/laravel-herd-wp/refs/heads/master/wp.php) | [WordPress Management](WORDPRESS-COMMANDS.md#wpphp---wordpress-tools--templates) |
+| `herd.xdebug` | Enable/disable Xdebug | ✅ | [📥 Download](https://raw.githubusercontent.com/ravinderk/laravel-herd-wp/refs/heads/master/herd.xdebug) | [PHP & Debugging](HERD-COMMANDS.md#herdxdebug---xdebug-management) |
+| `herd.php` | Manage PHP settings | ✅ | [📥 Download](https://raw.githubusercontent.com/ravinderk/laravel-herd-wp/refs/heads/master/herd.php) | [PHP & Debugging](HERD-COMMANDS.md#herdphp---php-settings-management) |
+| `help` | Show all commands | ❌ | [📥 Download](https://raw.githubusercontent.com/ravinderk/laravel-herd-wp/refs/heads/master/help) | Built-in help system |
 
 > 💡 **Tip**: All scripts support `--dry-run` for previewing changes
 > 💡 **Tip**: Use `./help` to list available command
