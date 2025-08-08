@@ -55,7 +55,7 @@ Keeping Scripts Updated, re-download updated scripts as needed using the downloa
 
 - Check [Troubleshooting Guide](TROUBLESHOOTING.md)
 - Use `./help` to see available commands
-- [Open an issue](../../issues) for installation problems
+- [Open an issue](https://github.com/ravinderk/laravel-herd-wp/issues/new) for installation problems
 
 ## 💡 Which Method Should I Choose?
 
