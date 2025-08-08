@@ -4,6 +4,20 @@ A collection of bash scripts to easily create and delete WordPress sites using [
 
 > **⚠️ Disclaimer**: These scripts have been tested on macOS Sonoma (14.x) running on a MacBook Pro 2019. While they should work on other macOS versions and hardware, your mileage may vary.
 
+## 💡 Motivation
+
+[Laravel Herd](https://herd.laravel.com/) is an excellent local development environment primarily designed for Laravel applications. While Herd does support other PHP frameworks and applications, it comes with certain limitations when working with WordPress:
+
+- **Manual Setup Process** - Creating WordPress sites requires multiple manual steps
+- **Database Management** - No built-in WordPress database creation and management
+- **Development Tools** - Missing WordPress-specific debugging and error handling
+- **Plugin Installation** - No automated setup for essential development plugins
+- **Configuration** - Manual wp-config.php setup for each site
+
+These scripts were created to bridge that gap and provide WordPress developers with the same smooth, automated experience that Laravel developers enjoy with Herd. By automating the entire WordPress setup process, managing databases, and providing powerful debugging tools, we make WordPress development on Herd as productive and enjoyable as possible.
+
+**The goal**: Make WordPress development with Laravel Herd feel as native and seamless as Laravel development itself! 🎯
+
 ## 🚀 Quick Start
 
 1. **Install Prerequisites**: [Laravel Herd](https://herd.laravel.com/), [WP-CLI](https://wp-cli.org/) and [DBngin](https://dbngin.com/)
