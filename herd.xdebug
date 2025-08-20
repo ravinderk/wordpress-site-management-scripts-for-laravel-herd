@@ -154,10 +154,10 @@ fi
 
 case "$ACTION" in
     "on")
-        configure_xdebug "debug" "Enabl" "🐛" "$DRY_RUN"
+        configure_xdebug "debug" "Enable" "🐛" "$DRY_RUN"
         ;;
     "off")
-        configure_xdebug "off" "Disabl" "🐛❌" "$DRY_RUN"
+        configure_xdebug "off" "Disable" "🐛❌" "$DRY_RUN"
         ;;
     *)
         echo "❌ Error: Invalid action '$ACTION'. Use 'on' or 'off'."

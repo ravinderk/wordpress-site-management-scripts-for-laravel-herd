@@ -229,10 +229,10 @@ case "$COMMAND" in
         
         case "$LOG_ACTION" in
             "on")
-                configure_php_logging "enable" "Enabl" "📊" "$DRY_RUN"
+                configure_php_logging "enable" "Enable" "📊" "$DRY_RUN"
                 ;;
             "off")
-                configure_php_logging "disable" "Disabl" "📊❌" "$DRY_RUN"
+                configure_php_logging "disable" "Disable" "📊❌" "$DRY_RUN"
                 ;;
             *)
                 echo "❌ Error: Invalid log action '$LOG_ACTION'. Use 'on' or 'off'."
